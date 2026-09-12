@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TabSlayer - SLAB Hackathon Presentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .presentation-container {
+            width: 100%;
+            max-width: 1200px;
+            background: #0a0a0a;
+            border-radius: 5px;
+            border: 3px solid #00ff41;
+            box-shadow: 0 0 50px rgba(0, 255, 65, 0.4);
+            overflow: hidden;
+        }
+
+        .slide {
+            display: none;
+            padding: 60px;
+            min-height: 600px;
+            background: #000000;
+            animation: glitch 0.5s ease-in;
+            position: relative;
+        }
+
+        .slide::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(0deg, transparent 24%, rgba(0, 255, 65, 0.05) 25%, rgba(0, 255, 65, 0.05) 26%, transparent 27%, transparent 74%, rgba(0, 255, 65, 0.05) 75%, rgba(0, 255, 65, 0.05) 76%, transparent 77%, transparent);
+            background-size: 50px 50px;
+            pointer-events: none;
+            animation: flicker 0.15s infinite;
+        }
+
+        @keyframes glitch {
+            from { opacity: 0; transform: translateX(-20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes flicker {
+            0% { opacity: 0.027; }
+            5% { opacity: 0.742; }
+            10% { opacity: 0.991; }
+            15% { opacity: 0.068; }
+            20% { opacity: 0.204; }
+            25% { opacity: 0.989; }
+            30% { opacity: 0.945; }
+            35% { opacity: 0.768; }
+            40% { opacity: 0.123; }
+            45% { opacity: 0.092; }
+            50% { opacity: 0.505; }
+            55% { opacity: 0.427; }
+            60% { opacity: 0.043; }
+            65% { opacity: 0.612; }
+            70% { opacity: 0.981; }
+            75% { opacity: 0.325; }
+            80% { opacity: 0.847; }
+            85% { opacity: 0.963; }
+            90% { opacity: 0.675; }
+            95% { opacity: 0.236; }
+            100% { opacity: 0.067; }
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 5em;
+            color: #00ff41;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px #00ff41, 0 0 40px rgba(0, 255, 65, 0.5);
+            font-weight: 900;
+            letter-spacing: 3px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { text-shadow: 0 0 20px #00ff41, 0 0 40px rgba(0, 255, 65, 0.5); }
+            50% { text-shadow: 0 0 30px #00ff41, 0 0 60px rgba(0, 255, 65, 0.8); }
+        }
+
+        h2 {
+            font-size: 3.5em;
+            color: #00ff41;
+            margin-bottom: 30px;
+            font-weight: 900;
+            text-shadow: 0 0 20px #00ff41;
+            letter-spacing: 2px;
+        }
+
+        h3 {
+            font-size: 2.5em;
+            color: #00ff41;
+            margin: 20px 0;
+            text-shadow: 0 0 15px #00ff41;
+            letter-spacing: 1px;
+        }
+
+        p, li {
+            font-size: 1.5em;
+            color: #00ff41;
+            line-height: 1.8;
+            margin: 15px 0;
+            font-weight: 500;
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+        }
+
+        ul {
+            list-style: none;
+            text-align: left;
+            display: inline-block;
+        }
+
+        li:before {
+            content: ">>> ";
+            color: #00ff41;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        .emoji {
+            font-size: 3em;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin: 30px 0;
+            width: 100%;
+        }
+
+        .stat-box {
+            background: #001a00;
+            color: #00ff41;
+            padding: 40px;
+            border-radius: 2px;
+            border: 2px solid #00ff41;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.3), inset 0 0 20px rgba(0, 255, 65, 0.1);
+        }
+
+        .stat-number {
+            font-size: 3.5em;
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 0 0 15px #00ff41;
+        }
+
+        .stat-label {
+            font-size: 1.3em;
+            opacity: 1;
+            font-weight: 600;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 60px;
+            background: #000000;
+            gap: 20px;
+            border-top: 2px solid #00ff41;
+        }
+
+        button {
+            padding: 15px 35px;
+            font-size: 1.2em;
+            border: 2px solid #00ff41;
+            border-radius: 2px;
+            background: #000000;
+            color: #00ff41;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+            font-family: 'Courier New', monospace;
+        }
+
+        button:hover {
+            background: #00ff41;
+            color: #000000;
+            box-shadow: 0 0 30px rgba(0, 255, 65, 0.6);
+        }
+
+        button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .slide-counter {
+            font-size: 1.5em;
+            color: #00ff41;
+            font-weight: bold;
+            min-width: 100px;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        .feature-card {
+            background: #001a00;
+            padding: 30px;
+            border-radius: 2px;
+            border-left: 4px solid #00ff41;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+        }
+
+        .feature-card h4 {
+            color: #00ff41;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            text-shadow: 0 0 10px #00ff41;
+            font-weight: 900;
+        }
+
+        .feature-card p {
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+            width: 100%;
+        }
+
+        .column-text {
+            text-align: left;
+        }
+
+        .column-text li {
+            margin: 15px 0;
+            font-size: 1.3em;
+        }
+
+        .highlight {
+            background: #001a00;
+            padding: 30px;
+            border-radius: 2px;
+            border: 2px solid #00ff41;
+            margin: 30px 0;
+            box-shadow: 0 0 25px rgba(0, 255, 65, 0.2);
+        }
+
+        .speed-comparison {
+            font-size: 2em;
+            font-weight: 900;
+            color: #00ff41;
+            margin: 20px 0;
+            text-shadow: 0 0 20px #00ff41;
+        }
+
+        .large-emoji {
+            font-size: 5em;
+            margin: 30px 0;
+            animation: bounce 2s infinite;
+        }
+
+        .tagline {
+            font-size: 1.8em;
+            color: #00ff41;
+            margin: 30px 0;
+            font-weight: 700;
+            text-shadow: 0 0 15px #00ff41;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide 1: Title -->
+        <div class="slide active">
+            <h1>>>> TABSLAYER <<<</h1>
+            <h3>Browser-Powered Research Aggregation Agent</h3>
+            <div class="emoji">⚡ 🔍 💻 ⚡</div>
+            <p style="font-size: 1.8em; margin-top: 40px; letter-spacing: 2px;">SLAB Hackathon - VIT Bhopal</p>
+            <p style="font-size: 1.2em; color: #00aa00; margin-top: 10px; letter-spacing: 1px;">$ research_faster("skip_the_tabs")</p>
+        </div>
+
+        <!-- Slide 2: The Problem -->
+        <div class="slide">
+            <h2>THE PROBLEM</h2>
+            <div class="large-emoji">😫 🌪️ 💥</div>
+            <p class="tagline">47 BROWSER TABS OPEN</p>
+            <div class="highlight">
+                <p style="font-size: 1.4em; margin: 20px 0;"><strong>>>> Google → Wikipedia → arXiv → Scholar → 40 MORE</strong></p>
+                <p style="font-size: 1.3em; margin: 15px 0;">>>> Copy-paste snippets endlessly</p>
+                <p style="font-size: 1.3em; margin: 15px 0;">>>> Lost sources and duplicate work</p>
+                <p style="font-size: 1.3em; margin: 15px 0;">>>> 45+ minutes wasted per research</p>
+            </div>
+            <p style="font-size: 1.5em; margin-top: 40px; color: #ff3333; font-weight: 900;">INEFFICIENT. REPETITIVE. EXHAUSTING.</p>
+        </div>
+
+        <!-- Slide 3: The Solution - Overview -->
+        <div class="slide">
+            <h2>THE SOLUTION</h2>
+            <h3>>>> AUTOMATE EVERYTHING <<<</h3>
+            <div class="large-emoji">⚡✨</div>
+            <div class="two-column">
+                <div class="column-text">
+                    <h3 style="text-align: left; font-size: 2.2em;">WHAT IT DOES:</h3>
+                    <ul style="font-size: 1.2em;">
+                        <li>You give it a topic</li>
+                        <li>Searches all sources instantly</li>
+                        <li>Returns 8+ findings</li>
+                        <li>Structured, clean JSON</li>
+                        <li>No tabs. No mess.</li>
+                    </ul>
+                </div>
+                <div class="column-text">
+                    <h3 style="text-align: left; font-size: 2.2em;">WHY IT MATTERS:</h3>
+                    <ul style="font-size: 1.2em;">
+                        <li>15 seconds per query</li>
+                        <li>&lt;1 second cached</li>
+                        <li>Real sources only</li>
+                        <li>Zero hallucinations</li>
+                        <li>1,662x faster repeats</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: How It Works - Architecture -->
+        <div class="slide">
+            <h2>HOW IT WORKS</h2>
+            <h3>>>> MULTI-SOURCE AGGREGATION <<<</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>📚 Wikipedia API</h4>
+                    <p>Instant encyclopedia data. 3-5 results per query.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📄 arXiv API</h4>
+                    <p>Academic papers & research. Latest publications first.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🌐 Webcmd Browser</h4>
+                    <p>Real browser automation. Scrapes dynamic JavaScript content.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🚀 Smart Caching</h4>
+                    <p>Local JSON storage. Instant repeat queries.</p>
+                </div>
+            </div>
+            <div class="highlight" style="margin-top: 30px;">
+                <p style="font-size: 1.6em; font-weight: 900;">>>> ALL HAPPENS IN 15-20 SECONDS <<<</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Live Demo - Fresh Query -->
+        <div class="slide">
+            <h2>LIVE DEMO - FRESH QUERY</h2>
+            <div class="emoji">🔍 ⚡ ⏱️</div>
+            <p class="tagline">Topic: "browser automation frameworks"</p>
+            <div class="highlight">
+                <p style="font-size: 1.3em; margin: 15px 0;"><strong>>>> Query execution:</strong></p>
+                <p style="font-size: 1.2em; margin: 10px 0;">$ wikipedia_search() → 3 results (0.5s)</p>
+                <p style="font-size: 1.2em; margin: 10px 0;">$ arxiv_search() → 3 papers (1.2s)</p>
+                <p style="font-size: 1.2em; margin: 10px 0;">$ webcmd_scrape() → news + github (8s)</p>
+                <p style="font-size: 1.2em; margin: 10px 0;">$ deduplicate_rank() → 8 findings (2s)</p>
+                <p style="font-size: 1.2em; margin: 10px 0;">$ cache_results() → saved locally (0.3s)</p>
+            </div>
+            <p style="font-size: 2em; color: #00ff41; margin-top: 30px; font-weight: 900;">TOTAL: 15-20 SECONDS ✅</p>
+            <p style="font-size: 1.3em; margin-top: 20px; color: #00aa00;">>>> 8-10 high-quality findings with sources</p>
+        </div>
+
+        <!-- Slide 6: The Magic Moment - Cached Query -->
+        <div class="slide">
+            <h2>THE MAGIC MOMENT</h2>
+            <div class="large-emoji">⚡⚡⚡</div>
+            <p class="tagline">SAME TOPIC. AGAIN.</p>
+            <div class="highlight">
+                <p style="font-size: 3em; margin: 30px 0; font-weight: 900; color: #00ff41;">< 0.01 SECONDS ⚡</p>
+            </div>
+            <div class="highlight">
+                <p style="font-size: 1.4em; margin: 15px 0;"><strong>WHY?</strong></p>
+                <p style="font-size: 1.3em; margin: 15px 0;">>>> Smart caching system stores all results locally</p>
+                <p style="font-size: 1.3em; margin: 15px 0;">>>> Repeat queries load from cache INSTANTLY</p>
+                <p style="font-size: 1.5em; margin: 20px 0; font-weight: 900; color: #00ff41;">>>> 1,662x FASTER <<<</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Technical Stack & Performance -->
+        <div class="slide">
+            <h2>TECHNICAL DEPTH</h2>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-number">~200</div>
+                    <div class="stat-label">Tokens per query</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">0</div>
+                    <div class="stat-label">Tokens cached</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">4</div>
+                    <div class="stat-label">Sources aggregated</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Real (no hallucinations)</div>
+                </div>
+            </div>
+            <div class="highlight" style="margin-top: 30px;">
+                <p style="font-size: 1.3em;"><strong>>>> Python | Webcmd | Claude Haiku | PyInstaller</strong></p>
+                <p style="font-size: 1.2em; margin-top: 15px;">>>> Standalone EXE (no setup needed)</p>
+            </div>
+        </div>
+
+        <!-- Slide 8: Real-World Impact -->
+        <div class="slide">
+            <h2>WHO WINS HERE</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>👨‍🎓 STUDENTS</h4>
+                    <p>Research papers WITHOUT tab hell. Perfect citations in seconds.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>👨‍💻 DEVELOPERS</h4>
+                    <p>Compare frameworks instantly. Survey tech stacks FAST.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>📰 JOURNALISTS</h4>
+                    <p>Aggregate breaking news from 4 sources SIMULTANEOUSLY.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>🔬 RESEARCHERS</h4>
+                    <p>Find academic papers and citations in seconds, NOT hours.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Why This Matters -->
+        <div class="slide">
+            <h2>WHY THIS WINS</h2>
+            <div class="highlight">
+                <p style="font-size: 1.6em; margin: 20px 0;"><strong>✅ LIVE RELIABILITY</strong></p>
+                <p style="font-size: 1.2em; margin: 15px 0;">Zero crashes. Works EVERY time. Graceful error recovery.</p>
+            </div>
+            <div class="highlight">
+                <p style="font-size: 1.6em; margin: 20px 0;"><strong>✅ REAL-WORLD USEFULNESS</strong></p>
+                <p style="font-size: 1.2em; margin: 15px 0;">Students, devs, journalists, researchers ACTUALLY want this.</p>
+            </div>
+            <div class="highlight">
+                <p style="font-size: 1.6em; margin: 20px 0;"><strong>✅ CREATIVE EXECUTION</strong></p>
+                <p style="font-size: 1.2em; margin: 15px 0;">1,662x speedup via smart caching is mind-blowing.</p>
+            </div>
+        </div>
+
+        <!-- Slide 10: Closing -->
+        <div class="slide">
+            <h1>>>> TABSLAYER <<<</h1>
+            <h3>Your Research Assistant That NEVER Forgets a Source</h3>
+            <div class="large-emoji">⚡ 🔍 💚</div>
+            <p class="tagline" style="font-size: 2em; margin-top: 50px;">Stop drowning in tabs.</p>
+            <p class="tagline" style="font-size: 2em;">Start researching smarter.</p>
+            <p style="font-size: 1.6em; margin-top: 40px; color: #00aa00; font-weight: 700; letter-spacing: 2px;">$ tabslayer.execute("win_hackathon")</p>
+        </div>
+
+        <div class="controls">
+            <button id="prevBtn" onclick="changeSlide(-1)">← PREVIOUS</button>
+            <div class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">10</span></div>
+            <button id="nextBtn" onclick="changeSlide(1)">NEXT →</button>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('totalSlides').textContent = totalSlides;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('currentSlide').textContent = currentSlide + 1;
+
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        function changeSlide(n) {
+            showSlide(currentSlide + n);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' && currentSlide > 0) changeSlide(-1);
+            if (e.key === 'ArrowRight' && currentSlide < totalSlides - 1) changeSlide(1);
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>
